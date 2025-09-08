@@ -8,6 +8,7 @@ import (
 )
 
 var cyan = color.New(color.FgCyan).SprintFunc()
+var red = color.New(color.FgRed).SprintFunc()
 var title = color.New(color.FgCyan, color.Bold).SprintFunc()
 
 var VerCmd = &cobra.Command{

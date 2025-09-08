@@ -20,14 +20,14 @@ var cmd = &cobra.Command{
 }
 
 func main() {
-
 	fmt.Println(border("┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓"))
 	fmt.Printf("┃%s┃\n", title("                  LOCKSMITH                   "))
 	fmt.Println(border("┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛"))
 
 	cmd.AddCommand(commands.GenerateBTCPairKeys)
+	cmd.AddCommand(commands.GenerateBTCWallet)
 	cmd.AddCommand(commands.VerCmd)
 	if err := cmd.Execute(); err != nil {
-		color.RedString("ERROR (%s)", err)
+		color.RedString("ERROR: %s", err)
 	}
 }

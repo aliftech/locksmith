@@ -142,6 +142,12 @@ docker-compose up --build
 
 ---
 
+## Running
+
+```bash
+go run main.go btc --bip44 -p=jerapahimut -i=10
+```
+
 ## 🧑‍💻 Author
 
 Built with ❤️ by Wahyu Krisna Aji
