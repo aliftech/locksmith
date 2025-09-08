@@ -9,16 +9,17 @@ import (
 	"github.com/aliftech/locksmith/cmd/cli/commands"
 )
 
+var border = color.New(color.FgCyan).SprintFunc()
+var title = color.New(color.FgCyan, color.Bold).SprintFunc()
+
 var cmd = &cobra.Command{
-	Use: "locksmith",
+	Use: title("locksmith"),
 	Annotations: map[string]string{
-		cobra.CommandDisplayNameAnnotation: "locksmith",
+		cobra.CommandDisplayNameAnnotation: title("locksmith"),
 	},
 }
 
 func main() {
-	border := color.New(color.FgCyan).SprintFunc()
-	title := color.New(color.FgCyan, color.Bold).SprintFunc()
 
 	fmt.Println(border("┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓"))
 	fmt.Printf("┃%s┃\n", title("                  LOCKSMITH                   "))
