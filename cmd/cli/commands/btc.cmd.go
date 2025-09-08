@@ -74,14 +74,21 @@ var GenerateBTCWallet = &cobra.Command{
 		fmt.Println(cyan(fmt.Sprintf("Your BTC mnemonic (BIP-%s): %s", bipType, wallet.Mnemonic)))
 		switch purpose {
 		case 0x8000002C:
+			fmt.Println(cyan(fmt.Sprintf("Your BTC public key: %s", walletAddr.PublicKeyHex)))
+			fmt.Println(cyan(fmt.Sprintf("Your BTC private key: %s", walletAddr.PrivateKeyHex)))
 			fmt.Println(cyan(fmt.Sprintf("Your BTC wallet address (BIP-%s): %s", bipType, walletAddr.P2PKHAddress)))
 		case 0x80000054:
+			fmt.Println(cyan(fmt.Sprintf("Your BTC public key: %s", walletAddr.PublicKeyHex)))
+			fmt.Println(cyan(fmt.Sprintf("Your BTC private key: %s", walletAddr.PrivateKeyHex)))
 			fmt.Println(cyan(fmt.Sprintf("Your BTC wallet address (BIP-%s): %s", bipType, walletAddr.P2WPKHAddress)))
 		case 0x80000056:
+			fmt.Println(cyan(fmt.Sprintf("Your BTC public key: %s", walletAddr.PublicKeyHex)))
+			fmt.Println(cyan(fmt.Sprintf("Your BTC private key: %s", walletAddr.PrivateKeyHex)))
 			fmt.Println(cyan(fmt.Sprintf("Your BTC wallet address (BIP-%s): %s", bipType, walletAddr.P2TRAddress)))
 		default:
-			fmt.Println(red("ERROR: unsupported purpose!"))
-			return
+			fmt.Println(cyan(fmt.Sprintf("Your BTC public key: %s", walletAddr.PublicKeyHex)))
+			fmt.Println(cyan(fmt.Sprintf("Your BTC private key: %s", walletAddr.PrivateKeyHex)))
+			fmt.Println(cyan(fmt.Sprintf("Your WIF BTC wallet address: %s", walletAddr.WIF)))
 		}
 	},
 }

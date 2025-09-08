@@ -8,40 +8,42 @@ import (
 )
 
 func main() {
-	// Create a new wallet
-	wallet, err := util.NewWallet("optional-passphrase")
+	// Create a new wallet with a passphrase
+	wallet, err := util.NewCryptoWallet("my-secure-passphrase")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Failed to create wallet: %v", err)
 	}
 
-	// Print mnemonic
-	fmt.Println("Mnemonic:", wallet.Mnemonic)
+	// Print the mnemonic phrase
+	fmt.Printf("Mnemonic: %s\n\n", wallet.Mnemonic)
 
-	// Generate BIP-44 key (P2PKH)
-	bip44Key, err := wallet.GenerateBTCWalletKey(0x8000002C, 0)
+	// Generate Ethereum address
+	ethAddress, err := wallet.GenerateEthereumAddress(0)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Failed to generate Ethereum address: %v", err)
 	}
-	fmt.Printf("BIP-44 P2PKH Address: %s\n", bip44Key.P2PKHAddress)
+	fmt.Println("Ethereum Address:")
+	fmt.Printf("Private Key: %s\n", ethAddress.PrivateKeyHex)
+	fmt.Printf("Public Key: %s\n", ethAddress.PublicKeyHex)
+	fmt.Printf("Address: %s\n\n", ethAddress.Address)
 
-	// Generate BIP-84 key (P2WPKH)
-	bip84Key, err := wallet.GenerateBTCWalletKey(0x80000054, 0)
+	// Generate Cardano address
+	adaAddress, err := wallet.GenerateCardanoAddress(0)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Failed to generate Cardano address: %v", err)
 	}
-	fmt.Printf("BIP-84 P2WPKH Address: %s\n", bip84Key.P2WPKHAddress)
+	fmt.Println("Cardano Address:")
+	fmt.Printf("Private Key: %s\n", adaAddress.PrivateKeyHex)
+	fmt.Printf("Public Key: %s\n", adaAddress.PublicKeyHex)
+	fmt.Printf("Address: %s\n\n", adaAddress.Address)
 
-	// Generate BIP-86 key (P2TR)
-	bip86Key, err := wallet.GenerateBTCWalletKey(0x80000056, 0)
+	// Generate random Ethereum address (not derived from wallet)
+	randomEthAddress, err := util.GenerateRandomCryptoAddress("ethereum")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Failed to generate random Ethereum address: %v", err)
 	}
-	fmt.Printf("BIP-86 P2TR Address: %s\n", bip86Key.P2TRAddress)
-
-	// Generate random key (non-mnemonic)
-	randomKey, err := util.GenerateBTCKey(true)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("Random P2PKH Address: %s\n", randomKey.P2PKHAddress)
+	fmt.Println("Random Ethereum Address:")
+	fmt.Printf("Private Key: %s\n", randomEthAddress.PrivateKeyHex)
+	fmt.Printf("Public Key: %s\n", randomEthAddress.PublicKeyHex)
+	fmt.Printf("Address: %s\n", randomEthAddress.Address)
 }
