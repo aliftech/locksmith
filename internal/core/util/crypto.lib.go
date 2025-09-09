@@ -3,10 +3,13 @@ package util
 import (
 	"crypto/ecdsa"
 	"crypto/rand"
+	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"strings"
 	"sync"
 
+	"github.com/btcsuite/btcd/btcutil"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/mr-tron/base58"
 	"github.com/tyler-smith/go-bip32"
@@ -284,7 +287,6 @@ func (w *CryptoWallet) GenerateCardanoAddress(index uint32) (*CryptoAddress, err
 	}, nil
 }
 
-// GenerateRandomCryptoAddress generates a random key pair and address for the specified cryptocurrency
 func GenerateRandomCryptoAddress(cryptoType string) (*CryptoAddress, error) {
 	privateKeyBytes := make([]byte, 32)
 	_, err := rand.Read(privateKeyBytes)
@@ -292,8 +294,8 @@ func GenerateRandomCryptoAddress(cryptoType string) (*CryptoAddress, error) {
 		return nil, fmt.Errorf("failed to generate private key: %v", err)
 	}
 
-	switch cryptoType {
-	case "ethereum":
+	switch strings.ToLower(cryptoType) {
+	case "ethereum", "avax", "bsc", "polygon":
 		privateKey, err := crypto.ToECDSA(privateKeyBytes)
 		if err != nil {
 			return nil, fmt.Errorf("failed to convert to ECDSA: %v", err)
@@ -308,7 +310,88 @@ func GenerateRandomCryptoAddress(cryptoType string) (*CryptoAddress, error) {
 			Address:       address,
 		}, nil
 
+	case "bitcoin", "bitcoincash", "litecoin", "dogecoin", "tron", "ripple":
+		privateKey, err := crypto.ToECDSA(privateKeyBytes)
+		if err != nil {
+			return nil, fmt.Errorf("failed to convert to ECDSA: %v", err)
+		}
+		publicKey := privateKey.Public().(*ecdsa.PublicKey)
+		publicKeyBytes := crypto.FromECDSAPub(publicKey)
+		hash160 := btcutil.Hash160(publicKeyBytes)
+
+		var version byte
+		switch cryptoType {
+		case "bitcoin":
+			version = 0x00
+		case "bitcoincash":
+			version = 0x00
+		case "litecoin":
+			version = 0x30
+		case "dogecoin":
+			version = 0x1E
+		case "tron":
+			version = 0x41
+		case "ripple":
+			version = 0x00
+		}
+
+		versionedPayload := append([]byte{version}, hash160...)
+		firstHash := sha256.Sum256(versionedPayload)
+		secondHash := sha256.Sum256(firstHash[:]) // ✅ Convert [32]byte → []byte using [:]
+		checksum := secondHash[:4]
+		addressBytes := append(versionedPayload, checksum...)
+		address := base58.Encode(addressBytes)
+
+		if cryptoType == "ripple" {
+			address = "r" + address[1:]
+		}
+
+		return &CryptoAddress{
+			PrivateKeyHex: hex.EncodeToString(privateKeyBytes),
+			PublicKeyHex:  hex.EncodeToString(publicKeyBytes),
+			Address:       address,
+		}, nil
+
+	case "polkadot":
+		privateKey, err := crypto.ToECDSA(privateKeyBytes)
+		if err != nil {
+			return nil, fmt.Errorf("failed to convert to ECDSA: %v", err)
+		}
+		publicKey := privateKey.Public().(*ecdsa.PublicKey)
+		publicKeyBytes := crypto.FromECDSAPub(publicKey)
+
+		var pubKey32 [32]byte
+		copy(pubKey32[:], publicKeyBytes)
+		payload := append([]byte{42}, pubKey32[:]...)
+		hash := sha256.Sum256(payload)
+		checksum := hash[:2]
+		payload = append(payload, checksum...)
+		address := base58.Encode(payload)
+
+		return &CryptoAddress{
+			PrivateKeyHex: hex.EncodeToString(privateKeyBytes),
+			PublicKeyHex:  hex.EncodeToString(publicKeyBytes),
+			Address:       address,
+		}, nil
+
+	case "cosmos":
+		privateKey, err := crypto.ToECDSA(privateKeyBytes)
+		if err != nil {
+			return nil, fmt.Errorf("failed to convert to ECDSA: %v", err)
+		}
+		publicKey := privateKey.Public().(*ecdsa.PublicKey)
+		publicKeyBytes := crypto.FromECDSAPub(publicKey)
+		hash160 := btcutil.Hash160(publicKeyBytes)
+		address := bech32Encode("cosmos", hash160)
+
+		return &CryptoAddress{
+			PrivateKeyHex: hex.EncodeToString(privateKeyBytes),
+			PublicKeyHex:  hex.EncodeToString(publicKeyBytes),
+			Address:       address,
+		}, nil
+
 	case "cardano":
+		// Existing code
 		privateKey, err := crypto.ToECDSA(privateKeyBytes)
 		if err != nil {
 			return nil, fmt.Errorf("failed to convert to ECDSA: %v", err)
@@ -323,8 +406,8 @@ func GenerateRandomCryptoAddress(cryptoType string) (*CryptoAddress, error) {
 		}
 
 		paymentKeyHash := hash28(publicKeyBytes)
-		stakeKeyHash := hash28(publicKeyBytes) // Simplified
-		header := byte(0x01)                   // Base address header
+		stakeKeyHash := hash28(publicKeyBytes)
+		header := byte(0x01)
 		addrBytes := append([]byte{header}, append(paymentKeyHash, stakeKeyHash...)...)
 		address := base58.Encode(addrBytes)
 

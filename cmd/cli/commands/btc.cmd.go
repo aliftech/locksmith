@@ -23,8 +23,8 @@ var GenerateBTCPairKeys = &cobra.Command{
 
 var GenerateBTCWallet = &cobra.Command{
 	Use:   "btc",
-	Short: "Generate BTC Wallet Address",
-	Long:  "Generate a BTC wallet address using BIP-44, BIP-84, or BIP-86 standards with an optional passphrase",
+	Short: "Generate Bitcoin(BTC) wallet address",
+	Long:  "Generate a Bitcoin wallet address using BIP-44, BIP-84, or BIP-86 standards with passphrase",
 	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		bip44, _ := cmd.Flags().GetBool("bip44")
@@ -71,24 +71,25 @@ var GenerateBTCWallet = &cobra.Command{
 			return
 		}
 
-		fmt.Println(cyan(fmt.Sprintf("Your BTC mnemonic (BIP-%s): %s", bipType, wallet.Mnemonic)))
+		fmt.Println(cyan("Bitcoin(BTC) Wallet Address:"))
+		fmt.Println(cyan(fmt.Sprintf("Mnemonic (BIP-%s): %s", bipType, wallet.Mnemonic)))
 		switch purpose {
 		case 0x8000002C:
-			fmt.Println(cyan(fmt.Sprintf("Your BTC public key: %s", walletAddr.PublicKeyHex)))
-			fmt.Println(cyan(fmt.Sprintf("Your BTC private key: %s", walletAddr.PrivateKeyHex)))
-			fmt.Println(cyan(fmt.Sprintf("Your BTC wallet address (BIP-%s): %s", bipType, walletAddr.P2PKHAddress)))
+			fmt.Println(cyan(fmt.Sprintf("Public Key: %s", walletAddr.PublicKeyHex)))
+			fmt.Println(cyan(fmt.Sprintf("Private Key: %s", walletAddr.PrivateKeyHex)))
+			fmt.Println(cyan(fmt.Sprintf("Wallet Address (BIP-%s): %s", bipType, walletAddr.P2PKHAddress)))
 		case 0x80000054:
-			fmt.Println(cyan(fmt.Sprintf("Your BTC public key: %s", walletAddr.PublicKeyHex)))
-			fmt.Println(cyan(fmt.Sprintf("Your BTC private key: %s", walletAddr.PrivateKeyHex)))
-			fmt.Println(cyan(fmt.Sprintf("Your BTC wallet address (BIP-%s): %s", bipType, walletAddr.P2WPKHAddress)))
+			fmt.Println(cyan(fmt.Sprintf("Public Key: %s", walletAddr.PublicKeyHex)))
+			fmt.Println(cyan(fmt.Sprintf("Private Key: %s", walletAddr.PrivateKeyHex)))
+			fmt.Println(cyan(fmt.Sprintf("Wallet  Address (BIP-%s): %s", bipType, walletAddr.P2WPKHAddress)))
 		case 0x80000056:
-			fmt.Println(cyan(fmt.Sprintf("Your BTC public key: %s", walletAddr.PublicKeyHex)))
-			fmt.Println(cyan(fmt.Sprintf("Your BTC private key: %s", walletAddr.PrivateKeyHex)))
-			fmt.Println(cyan(fmt.Sprintf("Your BTC wallet address (BIP-%s): %s", bipType, walletAddr.P2TRAddress)))
+			fmt.Println(cyan(fmt.Sprintf("Public Key: %s", walletAddr.PublicKeyHex)))
+			fmt.Println(cyan(fmt.Sprintf("Private Key: %s", walletAddr.PrivateKeyHex)))
+			fmt.Println(cyan(fmt.Sprintf("Wallet  Address (BIP-%s): %s", bipType, walletAddr.P2TRAddress)))
 		default:
-			fmt.Println(cyan(fmt.Sprintf("Your BTC public key: %s", walletAddr.PublicKeyHex)))
-			fmt.Println(cyan(fmt.Sprintf("Your BTC private key: %s", walletAddr.PrivateKeyHex)))
-			fmt.Println(cyan(fmt.Sprintf("Your WIF BTC wallet address: %s", walletAddr.WIF)))
+			fmt.Println(cyan(fmt.Sprintf("Public Key: %s", walletAddr.PublicKeyHex)))
+			fmt.Println(cyan(fmt.Sprintf("Private Key: %s", walletAddr.PrivateKeyHex)))
+			fmt.Println(cyan(fmt.Sprintf("Wallet Address: %s", walletAddr.WIF)))
 		}
 	},
 }

@@ -15,35 +15,73 @@ func main() {
 	}
 
 	// Print the mnemonic phrase
-	fmt.Printf("Mnemonic: %s\n\n", wallet.Mnemonic)
+	fmt.Printf("🔐 Mnemonic Seed Phrase:\n%s\n\n", wallet.Mnemonic)
 
-	// Generate Ethereum address
-	ethAddress, err := wallet.GenerateEthereumAddress(0)
-	if err != nil {
-		log.Fatalf("Failed to generate Ethereum address: %v", err)
-	}
-	fmt.Println("Ethereum Address:")
-	fmt.Printf("Private Key: %s\n", ethAddress.PrivateKeyHex)
-	fmt.Printf("Public Key: %s\n", ethAddress.PublicKeyHex)
-	fmt.Printf("Address: %s\n\n", ethAddress.Address)
+	// ========================
+	// 🟢 HD DERIVED ADDRESSES (from mnemonic)
+	// ========================
 
-	// Generate Cardano address
-	adaAddress, err := wallet.GenerateCardanoAddress(0)
-	if err != nil {
-		log.Fatalf("Failed to generate Cardano address: %v", err)
-	}
-	fmt.Println("Cardano Address:")
-	fmt.Printf("Private Key: %s\n", adaAddress.PrivateKeyHex)
-	fmt.Printf("Public Key: %s\n", adaAddress.PublicKeyHex)
-	fmt.Printf("Address: %s\n\n", adaAddress.Address)
+	fmt.Println("===========================================")
+	fmt.Println("🟢 HD DERIVED ADDRESSES (from mnemonic)")
+	fmt.Println("===========================================")
 
-	// Generate random Ethereum address (not derived from wallet)
-	randomEthAddress, err := util.GenerateRandomCryptoAddress("ethereum")
+	generateAndPrintHDAddress(wallet, "Ethereum", wallet.GenerateEthereumAddress, 0)
+	generateAndPrintHDAddress(wallet, "Cardano", wallet.GenerateCardanoAddress, 0)
+	generateAndPrintHDAddress(wallet, "Litecoin", wallet.GenerateLitecoinAddress, 0)
+	generateAndPrintHDAddress(wallet, "Dogecoin", wallet.GenerateDogecoinAddress, 0)
+	generateAndPrintHDAddress(wallet, "Bitcoin Cash", wallet.GenerateBitcoinCashAddress, 0)
+	generateAndPrintHDAddress(wallet, "Tron", wallet.GenerateTronAddress, 0)
+	generateAndPrintHDAddress(wallet, "Polkadot", wallet.GeneratePolkadotAddress, 0)
+	generateAndPrintHDAddress(wallet, "Ripple", wallet.GenerateRippleAddress, 0)
+
+	// ========================
+	// 🎲 RANDOMLY GENERATED ADDRESSES (not from wallet)
+	// ========================
+
+	fmt.Println("\n===========================================")
+	fmt.Println("🎲 RANDOMLY GENERATED ADDRESSES")
+	fmt.Println("===========================================")
+
+	generateAndPrintRandomAddress("Bitcoin", "bitcoin")
+	generateAndPrintRandomAddress("Ethereum", "ethereum")
+	generateAndPrintRandomAddress("Cardano", "cardano")
+	generateAndPrintRandomAddress("Litecoin", "litecoin")
+	generateAndPrintRandomAddress("Dogecoin", "dogecoin")
+	generateAndPrintRandomAddress("Bitcoin Cash", "bitcoincash")
+	generateAndPrintRandomAddress("Tron", "tron")
+	generateAndPrintRandomAddress("Polkadot", "polkadot")
+	generateAndPrintRandomAddress("Ripple", "ripple")
+
+	fmt.Println("\n✅ Done!")
+}
+
+// Helper function to generate and print HD-derived address
+func generateAndPrintHDAddress(
+	wallet *util.CryptoWallet,
+	coinName string,
+	generator func(uint32) (*util.CryptoAddress, error),
+	index uint32,
+) {
+	addr, err := generator(index)
 	if err != nil {
-		log.Fatalf("Failed to generate random Ethereum address: %v", err)
+		log.Printf("⚠️ Failed to generate %s HD address: %v", coinName, err)
+		return
 	}
-	fmt.Println("Random Ethereum Address:")
-	fmt.Printf("Private Key: %s\n", randomEthAddress.PrivateKeyHex)
-	fmt.Printf("Public Key: %s\n", randomEthAddress.PublicKeyHex)
-	fmt.Printf("Address: %s\n", randomEthAddress.Address)
+	fmt.Printf("\n%s (HD Derived) #%d:\n", coinName, index)
+	fmt.Printf("🔑 Private Key: %s\n", addr.PrivateKeyHex)
+	fmt.Printf("🌐 Public Key:  %s\n", addr.PublicKeyHex)
+	fmt.Printf("📬 Address:     %s\n", addr.Address)
+}
+
+// Helper function to generate and print random address
+func generateAndPrintRandomAddress(coinName, cryptoType string) {
+	addr, err := util.GenerateRandomCryptoAddress(cryptoType)
+	if err != nil {
+		log.Printf("⚠️ Failed to generate random %s address: %v", coinName, err)
+		return
+	}
+	fmt.Printf("\n%s (Random):\n", coinName)
+	fmt.Printf("🔑 Private Key: %s\n", addr.PrivateKeyHex)
+	fmt.Printf("🌐 Public Key:  %s\n", addr.PublicKeyHex)
+	fmt.Printf("📬 Address:     %s\n", addr.Address)
 }
