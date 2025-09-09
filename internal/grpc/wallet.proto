@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package wallet;
+
+option go_package = "./walletpb";
+
+message StoreWalletRequest {
+  string mnemonic = 1;
+  string public_key = 2;
+  string private_key = 3;
+  string address = 4;
+  uint32 index = 5;
+  string passphrase_hash = 6; // Store hash for security
+  string created_by = 7;
+}
+
+message StoreWalletResponse {
+  bool success = 1;
+  string message = 2;
+  int64 wallet_id = 3;
+}
+
+service WalletService {
+  rpc StoreWallet(StoreWalletRequest) returns (StoreWalletResponse);
+}
