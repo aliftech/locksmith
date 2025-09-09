@@ -29,6 +29,7 @@ func main() {
 	cmd.AddCommand(commands.GenerateEthWallet)
 	cmd.AddCommand(commands.GenerateCardanoWallet)
 	cmd.AddCommand(commands.GenerateLitecoinWallet)
+	cmd.AddCommand(commands.GenerateDogecoinWallet)
 	cmd.AddCommand(commands.VerCmd)
 	if err := cmd.Execute(); err != nil {
 		color.RedString("ERROR: %s", err)
