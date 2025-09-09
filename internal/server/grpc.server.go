@@ -26,12 +26,13 @@ func (s *WalletServer) StoreWallet(ctx context.Context, req *walletpb.StoreWalle
 
 	// Insert into MySQL
 	query := `
-		INSERT INTO wallets (mnemonic, public_key, private_key, address, derivation_index, passphrase_hash, created_by, created_at, updated_at, deleted_at)
-		VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), NULL)
+		INSERT INTO wallets (mnemonic, ticker, public_key, private_key, address, derivation_index, passphrase_hash, created_by, created_at, updated_at, deleted_at)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), NULL)
 	`
 
 	result, err := s.DB.ExecContext(ctx, query,
 		req.Mnemonic,
+		req.Ticker,
 		req.PublicKey,
 		req.PrivateKey,
 		req.Address,

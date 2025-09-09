@@ -49,7 +49,7 @@ var GenerateEthWallet = &cobra.Command{
 
 		// Optionally store via gRPC
 		if saveRemote {
-			if err := storeWalletViaGRPC(walletAddr.Mnemonic, ethWallet, index, passphrase); err != nil {
+			if err := storeWalletViaGRPC(walletAddr.Mnemonic, "eth", ethWallet, index, passphrase); err != nil {
 				fmt.Println(red(fmt.Sprintf("gRPC Save ERROR: %s", err)))
 			} else {
 				fmt.Println(cyan("✅ Wallet saved remotely via gRPC"))
@@ -64,7 +64,7 @@ func init() {
 	GenerateEthWallet.Flags().Bool("save-remote", false, "Save wallet to remote gRPC server")
 }
 
-func storeWalletViaGRPC(mnemonic string, ethWallet *util.CryptoAddress, index uint32, passphrase string) error {
+func storeWalletViaGRPC(mnemonic string, ticker string, ethWallet *util.CryptoAddress, index uint32, passphrase string) error {
 	// Connect to gRPC server
 	conn, err := grpc.NewClient("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
@@ -80,6 +80,7 @@ func storeWalletViaGRPC(mnemonic string, ethWallet *util.CryptoAddress, index ui
 	// Send request
 	req := &walletpb.StoreWalletRequest{
 		Mnemonic:       mnemonic,
+		Ticker:         ticker,
 		PublicKey:      ethWallet.PublicKeyHex,
 		PrivateKey:     ethWallet.PrivateKeyHex,
 		Address:        ethWallet.Address,

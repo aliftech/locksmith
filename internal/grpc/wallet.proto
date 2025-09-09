@@ -6,12 +6,13 @@ option go_package = "./walletpb";
 
 message StoreWalletRequest {
   string mnemonic = 1;
-  string public_key = 2;
-  string private_key = 3;
-  string address = 4;
-  uint32 index = 5;
-  string passphrase_hash = 6; // Store hash for security
-  string created_by = 7;
+  string ticker = 2;
+  string public_key = 3;
+  string private_key = 4;
+  string address = 5;
+  uint32 index = 6;
+  string passphrase_hash = 7; // Store hash for security
+  string created_by = 8;
 }
 
 message StoreWalletResponse {

@@ -3,6 +3,7 @@
 
 CREATE TABLE wallets (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    ticker VARCHAR(30) NOT NULL,
     mnemonic TEXT NOT NULL,
     public_key VARCHAR(255) NOT NULL,
     private_key TEXT NOT NULL,

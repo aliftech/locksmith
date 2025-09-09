@@ -183,7 +183,13 @@ migrate create -ext sql -dir internal/core/migrations -seq create_wallets_table
 Then run the following command to create new table
 
 ```bash
-migrate -database mysql://youruser:yourpassword@tcp(localhost:3306)/locksmith -path internal/core/migrations up
+migrate -database "mysql://youruser:yourpassword@tcp(localhost:3306)/dbname" -path internal/core/migrations up
+```
+
+delete table
+
+```bash
+migrate -database "mysql://youruser:yourpass@tcp(localhost:3306)/dbname" -path internal/core/migrations down
 ```
 
 ## 🧑‍💻 Author
