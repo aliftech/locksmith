@@ -3,6 +3,7 @@ package commands
 import (
 	"fmt"
 
+	"github.com/aliftech/locksmith/internal/core/lib"
 	"github.com/aliftech/locksmith/internal/core/util"
 	"github.com/spf13/cobra"
 )
@@ -17,27 +18,27 @@ var GeneratePolkadotWallet = &cobra.Command{
 		index, _ := cmd.Flags().GetUint32("index")
 
 		if passphrase == "" {
-			fmt.Println(red("ERROR: passphrase required!"))
+			fmt.Println(lib.Red("ERROR: passphrase required!"))
 			return
 		}
 
 		wallet, err := util.NewCryptoWallet(passphrase)
 		if err != nil {
-			fmt.Println(red(fmt.Sprintf("ERROR: %s", err)))
+			fmt.Println(lib.Red(fmt.Sprintf("ERROR: %s", err)))
 			return
 		}
 
 		dotWallet, dotErr := wallet.GeneratePolkadotAddress(index)
 		if dotErr != nil {
-			fmt.Println(red(fmt.Sprintf("ERROR: %s", err)))
+			fmt.Println(lib.Red(fmt.Sprintf("ERROR: %s", err)))
 			return
 		}
 
-		fmt.Println(cyan("Polkadot(DOT) Wallet Address:"))
-		fmt.Println(cyan("Mnemonic: ", wallet.Mnemonic))
-		fmt.Println(cyan("Public Key: ", dotWallet.PublicKeyHex))
-		fmt.Println(cyan("Private Key: ", dotWallet.PrivateKeyHex))
-		fmt.Println(cyan("Wallet Address: ", dotWallet.Address))
+		fmt.Println(lib.Cyan("Polkadot(DOT) Wallet Address:"))
+		fmt.Println(lib.Cyan("Mnemonic: ", wallet.Mnemonic))
+		fmt.Println(lib.Cyan("Public Key: ", dotWallet.PublicKeyHex))
+		fmt.Println(lib.Cyan("Private Key: ", dotWallet.PrivateKeyHex))
+		fmt.Println(lib.Cyan("Wallet Address: ", dotWallet.Address))
 	},
 }
 

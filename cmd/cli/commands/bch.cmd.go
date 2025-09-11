@@ -3,6 +3,7 @@ package commands
 import (
 	"fmt"
 
+	"github.com/aliftech/locksmith/internal/core/lib"
 	"github.com/aliftech/locksmith/internal/core/util"
 	"github.com/spf13/cobra"
 )
@@ -17,27 +18,27 @@ var GenerateBitcoinCashWallet = &cobra.Command{
 		index, _ := cmd.Flags().GetUint32("index")
 
 		if passphrase == "" {
-			fmt.Println(red("ERROR: passphrase required!"))
+			fmt.Println(lib.Red("ERROR: passphrase required!"))
 			return
 		}
 
 		wallet, err := util.NewCryptoWallet(passphrase)
 		if err != nil {
-			fmt.Println(red(fmt.Sprintf("ERROR: %s", err)))
+			fmt.Println(lib.Red(fmt.Sprintf("ERROR: %s", err)))
 			return
 		}
 
 		bchWallet, bchErr := wallet.GenerateBitcoinCashAddress(index)
 		if bchErr != nil {
-			fmt.Println(red(fmt.Sprintf("ERROR: %s", err)))
+			fmt.Println(lib.Red(fmt.Sprintf("ERROR: %s", err)))
 			return
 		}
 
-		fmt.Println(cyan("Bitcoin Cash(BCH) Wallet Address:"))
-		fmt.Println(cyan("Mnemonic: ", wallet.Mnemonic))
-		fmt.Println(cyan("Public Key: ", bchWallet.PublicKeyHex))
-		fmt.Println(cyan("Private Key: ", bchWallet.PrivateKeyHex))
-		fmt.Println(cyan("Wallet Address: ", bchWallet.Address))
+		fmt.Println(lib.Cyan("Bitcoin Cash(BCH) Wallet Address:"))
+		fmt.Println(lib.Cyan("Mnemonic: ", wallet.Mnemonic))
+		fmt.Println(lib.Cyan("Public Key: ", bchWallet.PublicKeyHex))
+		fmt.Println(lib.Cyan("Private Key: ", bchWallet.PrivateKeyHex))
+		fmt.Println(lib.Cyan("Wallet Address: ", bchWallet.Address))
 	},
 }
 

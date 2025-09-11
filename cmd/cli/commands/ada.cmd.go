@@ -3,8 +3,10 @@ package commands
 import (
 	"fmt"
 
-	"github.com/aliftech/locksmith/internal/core/util"
 	"github.com/spf13/cobra"
+
+	"github.com/aliftech/locksmith/internal/core/lib"
+	"github.com/aliftech/locksmith/internal/core/util"
 )
 
 var GenerateCardanoWallet = &cobra.Command{
@@ -17,27 +19,27 @@ var GenerateCardanoWallet = &cobra.Command{
 		index, _ := cmd.Flags().GetUint32("index")
 
 		if passphrase == "" {
-			fmt.Println(red("ERROR: passphrase required!"))
+			fmt.Println(lib.Red("ERROR: passphrase required!"))
 			return
 		}
 
 		walletAddr, err := util.NewCryptoWallet(passphrase)
 		if err != nil {
-			fmt.Println(red(fmt.Sprintf("ERROR: %s", err)))
+			fmt.Println(lib.Red(fmt.Sprintf("ERROR: %s", err)))
 			return
 		}
 
 		adaWallet, adaErr := walletAddr.GenerateCardanoAddress(index)
 		if adaErr != nil {
-			fmt.Println(red(fmt.Sprintf("ERROR: %s", err)))
+			fmt.Println(lib.Red(fmt.Sprintf("ERROR: %s", err)))
 			return
 		}
 
-		fmt.Println(cyan("Cardano(ADA) Wallet Address:"))
-		fmt.Println(cyan("Mnemonic: ", walletAddr.Mnemonic))
-		fmt.Println(cyan("Public Key: ", adaWallet.PublicKeyHex))
-		fmt.Println(cyan("Private Key: ", adaWallet.PrivateKeyHex))
-		fmt.Println(cyan("Wallet Address: ", adaWallet.Address))
+		fmt.Println(lib.Red(lib.Bold("Cardano(ADA) Wallet Address:")))
+		fmt.Println(lib.Cyan("Mnemonic: ", walletAddr.Mnemonic))
+		fmt.Println(lib.Cyan("Public Key: ", adaWallet.PublicKeyHex))
+		fmt.Println(lib.Cyan("Private Key: ", adaWallet.PrivateKeyHex))
+		fmt.Println(lib.Cyan("Wallet Address: ", adaWallet.Address))
 	},
 }
 

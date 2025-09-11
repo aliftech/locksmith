@@ -3,6 +3,7 @@ package commands
 import (
 	"fmt"
 
+	"github.com/aliftech/locksmith/internal/core/lib"
 	"github.com/aliftech/locksmith/internal/core/util"
 	"github.com/spf13/cobra"
 )
@@ -12,12 +13,12 @@ var GenerateBTCPairKeys = &cobra.Command{
 	Short: "Generate BTC public and private key",
 	Run: func(cmd *cobra.Command, args []string) {
 		pairkeys, _ := util.GenerateBTCKey(true)
-		fmt.Printf(cyan("BTC public key: %s \n"), title(pairkeys.PublicKeyHex))
-		fmt.Printf(cyan("BTC private key: %s \n"), title(pairkeys.PrivateKeyHex))
-		fmt.Printf(cyan("BTC WIF: %s \n"), title(pairkeys.WIF))
-		fmt.Printf(cyan("BTC P2PKHAddress: %s \n"), title(pairkeys.P2PKHAddress))
-		fmt.Printf(cyan("BTC P2TRAddress: %s \n"), title(pairkeys.P2TRAddress))
-		fmt.Printf(cyan("BTC P2WPKHAddress: %s \n"), title(pairkeys.P2WPKHAddress))
+		fmt.Printf(lib.Cyan("BTC public key: %s \n"), lib.Cyan(lib.Bold(pairkeys.PublicKeyHex)))
+		fmt.Printf(lib.Cyan("BTC private key: %s \n"), lib.Cyan(lib.Bold(pairkeys.PrivateKeyHex)))
+		fmt.Printf(lib.Cyan("BTC WIF: %s \n"), lib.Cyan(lib.Bold(pairkeys.WIF)))
+		fmt.Printf(lib.Cyan("BTC P2PKHAddress: %s \n"), lib.Cyan(lib.Bold(pairkeys.P2PKHAddress)))
+		fmt.Printf(lib.Cyan("BTC P2TRAddress: %s \n"), lib.Cyan(lib.Bold(pairkeys.P2TRAddress)))
+		fmt.Printf(lib.Cyan("BTC P2WPKHAddress: %s \n"), lib.Cyan(lib.Bold(pairkeys.P2WPKHAddress)))
 	},
 }
 
@@ -48,48 +49,48 @@ var GenerateBTCWallet = &cobra.Command{
 			bipType = "86"
 			purpose = 0x80000056
 		default:
-			fmt.Println(red("ERROR: Please specify one of --bip44, --bip84, or --bip86"))
+			fmt.Println(lib.Red("ERROR: Please specify one of --bip44, --bip84, or --bip86"))
 			return
 		}
 
 		if passphrase == "" {
-			fmt.Println(red("ERROR: passphrase required!"))
+			fmt.Println(lib.Red("ERROR: passphrase required!"))
 			return
 		}
 
 		// Generate wallet with the specified BIP standard and passphrase
 		wallet, err := util.NewWallet(passphrase)
 		if err != nil {
-			fmt.Println(red(fmt.Sprintf("ERROR: %s", err)))
+			fmt.Println(lib.Red(fmt.Sprintf("ERROR: %s", err)))
 			return
 		}
 
 		// Generate BTC wallet address
 		walletAddr, err := wallet.GenerateBTCWalletKey(purpose, index)
 		if err != nil {
-			fmt.Println(red(fmt.Sprintf("ERROR: %s", err)))
+			fmt.Println(lib.Red(fmt.Sprintf("ERROR: %s", err)))
 			return
 		}
 
-		fmt.Println(cyan("Bitcoin(BTC) Wallet Address:"))
-		fmt.Println(cyan(fmt.Sprintf("Mnemonic (BIP-%s): %s", bipType, wallet.Mnemonic)))
+		fmt.Println(lib.Cyan("Bitcoin(BTC) Wallet Address:"))
+		fmt.Println(lib.Cyan(fmt.Sprintf("Mnemonic (BIP-%s): %s", bipType, wallet.Mnemonic)))
 		switch purpose {
 		case 0x8000002C:
-			fmt.Println(cyan(fmt.Sprintf("Public Key: %s", walletAddr.PublicKeyHex)))
-			fmt.Println(cyan(fmt.Sprintf("Private Key: %s", walletAddr.PrivateKeyHex)))
-			fmt.Println(cyan(fmt.Sprintf("Wallet Address (BIP-%s): %s", bipType, walletAddr.P2PKHAddress)))
+			fmt.Println(lib.Cyan(fmt.Sprintf("Public Key: %s", walletAddr.PublicKeyHex)))
+			fmt.Println(lib.Cyan(fmt.Sprintf("Private Key: %s", walletAddr.PrivateKeyHex)))
+			fmt.Println(lib.Cyan(fmt.Sprintf("Wallet Address (BIP-%s): %s", bipType, walletAddr.P2PKHAddress)))
 		case 0x80000054:
-			fmt.Println(cyan(fmt.Sprintf("Public Key: %s", walletAddr.PublicKeyHex)))
-			fmt.Println(cyan(fmt.Sprintf("Private Key: %s", walletAddr.PrivateKeyHex)))
-			fmt.Println(cyan(fmt.Sprintf("Wallet  Address (BIP-%s): %s", bipType, walletAddr.P2WPKHAddress)))
+			fmt.Println(lib.Cyan(fmt.Sprintf("Public Key: %s", walletAddr.PublicKeyHex)))
+			fmt.Println(lib.Cyan(fmt.Sprintf("Private Key: %s", walletAddr.PrivateKeyHex)))
+			fmt.Println(lib.Cyan(fmt.Sprintf("Wallet  Address (BIP-%s): %s", bipType, walletAddr.P2WPKHAddress)))
 		case 0x80000056:
-			fmt.Println(cyan(fmt.Sprintf("Public Key: %s", walletAddr.PublicKeyHex)))
-			fmt.Println(cyan(fmt.Sprintf("Private Key: %s", walletAddr.PrivateKeyHex)))
-			fmt.Println(cyan(fmt.Sprintf("Wallet  Address (BIP-%s): %s", bipType, walletAddr.P2TRAddress)))
+			fmt.Println(lib.Cyan(fmt.Sprintf("Public Key: %s", walletAddr.PublicKeyHex)))
+			fmt.Println(lib.Cyan(fmt.Sprintf("Private Key: %s", walletAddr.PrivateKeyHex)))
+			fmt.Println(lib.Cyan(fmt.Sprintf("Wallet  Address (BIP-%s): %s", bipType, walletAddr.P2TRAddress)))
 		default:
-			fmt.Println(cyan(fmt.Sprintf("Public Key: %s", walletAddr.PublicKeyHex)))
-			fmt.Println(cyan(fmt.Sprintf("Private Key: %s", walletAddr.PrivateKeyHex)))
-			fmt.Println(cyan(fmt.Sprintf("Wallet Address: %s", walletAddr.WIF)))
+			fmt.Println(lib.Cyan(fmt.Sprintf("Public Key: %s", walletAddr.PublicKeyHex)))
+			fmt.Println(lib.Cyan(fmt.Sprintf("Private Key: %s", walletAddr.PrivateKeyHex)))
+			fmt.Println(lib.Cyan(fmt.Sprintf("Wallet Address: %s", walletAddr.WIF)))
 		}
 	},
 }

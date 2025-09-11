@@ -3,6 +3,7 @@ package commands
 import (
 	"fmt"
 
+	"github.com/aliftech/locksmith/internal/core/lib"
 	"github.com/aliftech/locksmith/internal/core/util"
 	"github.com/spf13/cobra"
 )
@@ -17,27 +18,27 @@ var GenerateRippleWallet = &cobra.Command{
 		index, _ := cmd.Flags().GetUint32("index")
 
 		if passphrase == "" {
-			fmt.Println("ERROR: passphrase required!")
+			fmt.Println(lib.Red("ERROR: passphrase required!"))
 			return
 		}
 
 		wallet, err := util.NewCryptoWallet(passphrase)
 		if err != nil {
-			fmt.Println(red(fmt.Sprintf("ERROR: %s", err)))
+			fmt.Println(lib.Red(fmt.Sprintf("ERROR: %s", err)))
 			return
 		}
 
 		xrpWallet, xrpErr := wallet.GenerateRippleAddress(index)
 		if xrpErr != nil {
-			fmt.Println(red(fmt.Sprintf("ERROR: %s", err)))
+			fmt.Println(lib.Red(fmt.Sprintf("ERROR: %s", err)))
 			return
 		}
 
-		fmt.Println(cyan("Ripple(XRP) Wallet Address:"))
-		fmt.Println(cyan("Mnemonic: ", wallet.Mnemonic))
-		fmt.Println(cyan("Public Key: ", xrpWallet.PublicKeyHex))
-		fmt.Println(cyan("Private Key: ", xrpWallet.PrivateKeyHex))
-		fmt.Println(cyan("Wallet Address: ", xrpWallet.Address))
+		fmt.Println(lib.Cyan("Ripple(XRP) Wallet Address:"))
+		fmt.Println(lib.Cyan("Mnemonic: ", wallet.Mnemonic))
+		fmt.Println(lib.Cyan("Public Key: ", xrpWallet.PublicKeyHex))
+		fmt.Println(lib.Cyan("Private Key: ", xrpWallet.PrivateKeyHex))
+		fmt.Println(lib.Cyan("Wallet Address: ", xrpWallet.Address))
 	},
 }
 
