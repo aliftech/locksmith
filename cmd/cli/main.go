@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/aliftech/locksmith/internal/core/commands"
+	"github.com/aliftech/locksmith/internal/core/config"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
@@ -16,6 +17,10 @@ var cmd = &cobra.Command{
 	Annotations: map[string]string{
 		cobra.CommandDisplayNameAnnotation: title("locksmith"),
 	},
+}
+
+func init() {
+	config.EnvSetup()
 }
 
 func main() {

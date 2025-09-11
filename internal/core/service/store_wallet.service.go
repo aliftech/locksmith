@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"os"
 	"time"
 
 	walletpb "github.com/aliftech/locksmith/internal/grpc"
@@ -16,7 +17,7 @@ import (
 
 func StoreWalletViaGRPC(mnemonic string, ticker string, cryptoWallet *util.CryptoAddress, index uint32, passphrase string) error {
 	// Connect to gRPC server
-	conn, err := grpc.NewClient("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(os.Getenv("GRPC_SERVER"), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return fmt.Errorf("failed to connect: %w", err)
 	}
@@ -67,7 +68,7 @@ func StoreWalletViaGRPC(mnemonic string, ticker string, cryptoWallet *util.Crypt
 
 func StoreBTCWalletViaGRPC(mnemonic string, ticker string, btcWallet *util.BitcoinAddress, index uint32, passphrase string, purpose uint32) error {
 	// connect to gRPC server
-	conn, err := grpc.NewClient("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(os.Getenv("GRPC_SERVER"), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return fmt.Errorf("failed to connect: %w", err)
 	}
