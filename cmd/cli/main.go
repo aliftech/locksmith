@@ -3,10 +3,9 @@ package main
 import (
 	"fmt"
 
+	"github.com/aliftech/locksmith/internal/core/commands"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
-
-	"github.com/aliftech/locksmith/cmd/cli/commands"
 )
 
 var border = color.New(color.FgCyan).SprintFunc()
