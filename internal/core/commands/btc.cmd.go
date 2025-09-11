@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/aliftech/locksmith/internal/core/lib"
+	"github.com/aliftech/locksmith/internal/core/service"
 	"github.com/aliftech/locksmith/internal/core/util"
 	"github.com/spf13/cobra"
 )
@@ -33,6 +34,7 @@ var GenerateBTCWallet = &cobra.Command{
 		bip86, _ := cmd.Flags().GetBool("bip86")
 		passphrase, _ := cmd.Flags().GetString("passphrase")
 		index, _ := cmd.Flags().GetUint32("index")
+		saveRemote, _ := cmd.Flags().GetBool("save-remote")
 
 		var bipType string
 		var purpose uint32
@@ -92,6 +94,15 @@ var GenerateBTCWallet = &cobra.Command{
 			fmt.Println(lib.Cyan(fmt.Sprintf("Private Key: %s", walletAddr.PrivateKeyHex)))
 			fmt.Println(lib.Cyan(fmt.Sprintf("Wallet Address: %s", walletAddr.WIF)))
 		}
+
+		// Implement gRPC
+		if saveRemote {
+			if err := service.StoreBTCWalletViaGRPC(wallet.Mnemonic, "BTC", walletAddr, index, passphrase, purpose); err != nil {
+				fmt.Println(lib.Red(fmt.Sprintf("gRPC Save ERROR: %s", err)))
+			} else {
+				fmt.Println(lib.Green(lib.Bold("✅ Wallet saved remotely via gRPC")))
+			}
+		}
 	},
 }
 
@@ -101,4 +112,5 @@ func init() {
 	GenerateBTCWallet.Flags().Bool("bip86", false, "Generate wallet using BIP-86 (P2TR)")
 	GenerateBTCWallet.Flags().StringP("passphrase", "p", "", "Passphrase for wallet generation (required)")
 	GenerateBTCWallet.Flags().Uint32P("index", "i", 0, "Index for deriving wallet address (default 0)")
+	GenerateBTCWallet.Flags().Bool("save-remote", false, "Save wallet to remote gRPC server")
 }

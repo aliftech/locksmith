@@ -43,7 +43,7 @@ var GenerateBitcoinCashWallet = &cobra.Command{
 		fmt.Println(lib.Cyan("Wallet Address: ", bchWallet.Address))
 
 		if saveRemote {
-			if err := service.StoreWalletViaGRPC(wallet.Mnemonic, "bch", bchWallet, index, passphrase); err != nil {
+			if err := service.StoreWalletViaGRPC(wallet.Mnemonic, "BCH", bchWallet, index, passphrase); err != nil {
 				fmt.Println(lib.Red(fmt.Sprintf("gRPC Save ERROR: %s", err)))
 			} else {
 				fmt.Println(lib.Green(lib.Bold("✅ Wallet saved remotely via gRPC")))

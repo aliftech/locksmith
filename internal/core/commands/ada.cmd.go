@@ -37,14 +37,14 @@ var GenerateCardanoWallet = &cobra.Command{
 			return
 		}
 
-		fmt.Println(lib.Red(lib.Bold("Cardano(ADA) Wallet Address:")))
+		fmt.Println(lib.Cyan(lib.Bold("Cardano(ADA) Wallet Address:")))
 		fmt.Println(lib.Cyan("Mnemonic: ", walletAddr.Mnemonic))
 		fmt.Println(lib.Cyan("Public Key: ", adaWallet.PublicKeyHex))
 		fmt.Println(lib.Cyan("Private Key: ", adaWallet.PrivateKeyHex))
 		fmt.Println(lib.Cyan("Wallet Address: ", adaWallet.Address))
 
 		if saveRemote {
-			if err := service.StoreWalletViaGRPC(walletAddr.Mnemonic, "ada", adaWallet, index, passphrase); err != nil {
+			if err := service.StoreWalletViaGRPC(walletAddr.Mnemonic, "ADA", adaWallet, index, passphrase); err != nil {
 				fmt.Println(lib.Red(fmt.Sprintf("gRPC Save ERROR: %s", err)))
 			} else {
 				fmt.Println(lib.Green(lib.Bold("✅ Wallet saved remotely via gRPC")))

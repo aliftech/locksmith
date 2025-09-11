@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/aliftech/locksmith/internal/core/lib"
+	"github.com/aliftech/locksmith/internal/core/service"
 	"github.com/aliftech/locksmith/internal/core/util"
 	"github.com/spf13/cobra"
 )
@@ -16,6 +17,7 @@ var GenerateLitecoinWallet = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		passphrase, _ := cmd.Flags().GetString("passphrase")
 		index, _ := cmd.Flags().GetUint32("index")
+		saveRemote, _ := cmd.Flags().GetBool("save-remote")
 
 		if passphrase == "" {
 			fmt.Println(lib.Red("ERROR: passphrase required!"))
@@ -39,10 +41,20 @@ var GenerateLitecoinWallet = &cobra.Command{
 		fmt.Println(lib.Cyan("Public Key: ", ltcWallet.PublicKeyHex))
 		fmt.Println(lib.Cyan("Private Key: ", ltcWallet.PrivateKeyHex))
 		fmt.Println("Wallet Address: ", ltcWallet.Address)
+
+		// Implement gRPC server
+		if saveRemote {
+			if err := service.StoreWalletViaGRPC(wallet.Mnemonic, "LTC", ltcWallet, index, passphrase); err != nil {
+				fmt.Println(lib.Red(fmt.Sprintf("gRPC Save ERROR: %s", err)))
+			} else {
+				fmt.Println(lib.Green(lib.Bold("✅ Wallet saved remotely via gRPC")))
+			}
+		}
 	},
 }
 
 func init() {
 	GenerateLitecoinWallet.Flags().StringP("passphrase", "p", "", "Passphrase for generate Litecoin wallet address(required)")
 	GenerateLitecoinWallet.Flags().Uint32P("index", "i", 0, "Index for deriving wallet address")
+	GenerateLitecoinWallet.Flags().Bool("save-remote", false, "Save wallet to remote gRPC server")
 }
