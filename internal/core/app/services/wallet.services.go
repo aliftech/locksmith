@@ -1,4 +1,4 @@
-package service
+package services
 
 import (
 	"context"
@@ -6,13 +6,12 @@ import (
 	"os"
 	"time"
 
+	"github.com/aliftech/locksmith/internal/core/lib"
+	"github.com/aliftech/locksmith/internal/core/util"
 	walletpb "github.com/aliftech/locksmith/internal/grpc"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-
-	"github.com/aliftech/locksmith/internal/core/lib"
-	"github.com/aliftech/locksmith/internal/core/util"
 )
 
 func StoreWalletViaGRPC(mnemonic string, ticker string, cryptoWallet *util.CryptoAddress, index uint32, passphrase string) error {

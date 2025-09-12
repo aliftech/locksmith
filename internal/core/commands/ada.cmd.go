@@ -5,8 +5,8 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/aliftech/locksmith/internal/core/app/services"
 	"github.com/aliftech/locksmith/internal/core/lib"
-	"github.com/aliftech/locksmith/internal/core/service"
 	"github.com/aliftech/locksmith/internal/core/util"
 )
 
@@ -44,7 +44,7 @@ var GenerateCardanoWallet = &cobra.Command{
 		fmt.Println(lib.Cyan("Wallet Address: ", adaWallet.Address))
 
 		if saveRemote {
-			if err := service.StoreWalletViaGRPC(walletAddr.Mnemonic, "ADA", adaWallet, index, passphrase); err != nil {
+			if err := services.StoreWalletViaGRPC(walletAddr.Mnemonic, "ADA", adaWallet, index, passphrase); err != nil {
 				fmt.Println(lib.Red(fmt.Sprintf("gRPC Save ERROR: %s", err)))
 			} else {
 				fmt.Println(lib.Green(lib.Bold("✅ Wallet saved remotely via gRPC")))

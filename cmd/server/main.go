@@ -1,11 +1,12 @@
 package main
 
 import (
-	"database/sql"
 	"log"
 	"net"
 	"os"
 
+	// 👈 Import repo
+	"github.com/aliftech/locksmith/internal/core/app/repositories/mysql"
 	"github.com/aliftech/locksmith/internal/core/config"
 	walletpb "github.com/aliftech/locksmith/internal/grpc"
 	"github.com/aliftech/locksmith/internal/server"
@@ -18,33 +19,21 @@ func init() {
 }
 
 func main() {
-	USER := os.Getenv("USER")
-	PASS := os.Getenv("PASSWORD")
-	DBNAME := os.Getenv("DBNAME")
-	HOST := os.Getenv("HOST")
-	// Connect to MySQL
-	db, err := sql.Open("mysql", USER+":"+PASS+"@tcp("+HOST+")/"+DBNAME)
-	if err != nil {
-		log.Fatal("failed to connect to DB: ", err)
-	}
-	defer db.Close()
-
-	// Test connection
-	if err := db.Ping(); err != nil {
-		log.Fatal("failed to ping DB: ", err)
-	}
+	// Initialize repository with DB connection
+	walletRepo := mysql.NewWalletRepository(config.ConnectDB())
 
 	// Create gRPC server
 	lis, err := net.Listen("tcp", os.Getenv("GRPC_TCP"))
 	if err != nil {
-		log.Fatal("failed to listen: ", err)
+		log.Fatal("failed to listen:", err)
 	}
 
 	s := grpc.NewServer()
-	walletpb.RegisterWalletServiceServer(s, server.NewWalletServer(db))
+	// ✅ Pass repository interface, not *sql.DB
+	walletpb.RegisterWalletServiceServer(s, server.NewWalletServer(walletRepo))
 
-	log.Println("gRPC server listening on ", os.Getenv("GRPC_TCP"))
+	log.Println("gRPC server listening on", os.Getenv("GRPC_TCP"))
 	if err := s.Serve(lis); err != nil {
-		log.Fatal("failed to serve: ", err)
+		log.Fatal("failed to serve:", err)
 	}
 }

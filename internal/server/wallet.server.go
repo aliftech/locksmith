@@ -3,9 +3,10 @@ package server
 import (
 	"context"
 	"crypto/sha256"
-	"database/sql"
 	"fmt"
 
+	"github.com/aliftech/locksmith/internal/core/app/models"
+	"github.com/aliftech/locksmith/internal/core/app/repositories/interfaces"
 	walletpb "github.com/aliftech/locksmith/internal/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -13,11 +14,13 @@ import (
 
 type WalletServer struct {
 	walletpb.UnimplementedWalletServiceServer
-	DB *sql.DB
+	WalletRepo interfaces.WalletInterface
 }
 
-func NewWalletServer(db *sql.DB) *WalletServer {
-	return &WalletServer{DB: db}
+func NewWalletServer(walletRepo interfaces.WalletInterface) *WalletServer {
+	return &WalletServer{
+		WalletRepo: walletRepo,
+	}
 }
 
 func (s *WalletServer) StoreWallet(ctx context.Context, req *walletpb.StoreWalletRequest) (*walletpb.StoreWalletResponse, error) {
@@ -25,34 +28,25 @@ func (s *WalletServer) StoreWallet(ctx context.Context, req *walletpb.StoreWalle
 	passHash := fmt.Sprintf("%x", sha256.Sum256([]byte(req.PassphraseHash)))
 
 	// Insert into MySQL
-	query := `
-		INSERT INTO wallets (mnemonic, ticker, public_key, private_key, address, derivation_index, passphrase_hash, created_by, created_at, updated_at, deleted_at)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), NULL)
-	`
-
-	result, err := s.DB.ExecContext(ctx, query,
-		req.Mnemonic,
-		req.Ticker,
-		req.PublicKey,
-		req.PrivateKey,
-		req.Address,
-		req.Index,
-		passHash,
-		"CLI system",
-	)
-
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to store wallet: %v", err)
+	wallet := models.Wallet{
+		Mnemonic:        req.Mnemonic,
+		Ticker:          req.Ticker,
+		PublicKey:       req.PublicKey,
+		PrivateKey:      req.PrivateKey,
+		Address:         req.Address,
+		DerivationIndex: uint(req.Index),
+		PassphraseHash:  passHash,
+		CreatedBy:       "CLI system",
 	}
 
-	id, err := result.LastInsertId()
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to get wallet ID: %v", err)
+	// Persist user
+	if err := s.WalletRepo.StoreWallet(&wallet); err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to store wallet: %v", err)
 	}
 
 	return &walletpb.StoreWalletResponse{
 		Success:  true,
 		Message:  "Wallet stored successfully",
-		WalletId: id,
+		WalletId: int64(wallet.ID),
 	}, nil
 }

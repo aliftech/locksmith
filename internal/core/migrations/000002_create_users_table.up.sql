@@ -3,11 +3,11 @@
 
 CREATE TABLE users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    firstname VARCHAR(255) NOT NULL,
-    lastname VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password TEXT NOT NULL,
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+    firstname VARCHAR(255) NULL,
+    lastname VARCHAR(255) NULL,
+    email VARCHAR(255) NULL UNIQUE,
+    password TEXT NULL,
+    created_at DATETIME NULL,
+    updated_at DATETIME NULL,
     deleted_at DATETIME NULL
 )

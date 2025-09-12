@@ -6,8 +6,8 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/spf13/cobra"
 
+	"github.com/aliftech/locksmith/internal/core/app/services"
 	"github.com/aliftech/locksmith/internal/core/lib"
-	"github.com/aliftech/locksmith/internal/core/service"
 	"github.com/aliftech/locksmith/internal/core/util"
 )
 
@@ -46,7 +46,7 @@ var GenerateEthWallet = &cobra.Command{
 
 		// Optionally store via gRPC
 		if saveRemote {
-			if err := service.StoreWalletViaGRPC(walletAddr.Mnemonic, "ETH", ethWallet, index, passphrase); err != nil {
+			if err := services.StoreWalletViaGRPC(walletAddr.Mnemonic, "ETH", ethWallet, index, passphrase); err != nil {
 				fmt.Println(lib.Red(fmt.Sprintf("gRPC Save ERROR: %s", err)))
 			} else {
 				fmt.Println(lib.Green(lib.Bold("✅ Wallet saved remotely via gRPC")))

@@ -3,8 +3,8 @@ package commands
 import (
 	"fmt"
 
+	"github.com/aliftech/locksmith/internal/core/app/services"
 	"github.com/aliftech/locksmith/internal/core/lib"
-	"github.com/aliftech/locksmith/internal/core/service"
 	"github.com/aliftech/locksmith/internal/core/util"
 	"github.com/spf13/cobra"
 )
@@ -97,7 +97,7 @@ var GenerateBTCWallet = &cobra.Command{
 
 		// Implement gRPC
 		if saveRemote {
-			if err := service.StoreBTCWalletViaGRPC(wallet.Mnemonic, "BTC", walletAddr, index, passphrase, purpose); err != nil {
+			if err := services.StoreBTCWalletViaGRPC(wallet.Mnemonic, "BTC", walletAddr, index, passphrase, purpose); err != nil {
 				fmt.Println(lib.Red(fmt.Sprintf("gRPC Save ERROR: %s", err)))
 			} else {
 				fmt.Println(lib.Green(lib.Bold("✅ Wallet saved remotely via gRPC")))
