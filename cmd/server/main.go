@@ -18,8 +18,12 @@ func init() {
 }
 
 func main() {
+	USER := os.Getenv("USER")
+	PASS := os.Getenv("PASSWORD")
+	DBNAME := os.Getenv("DBNAME")
+	HOST := os.Getenv("HOST")
 	// Connect to MySQL
-	db, err := sql.Open("mysql", "root:root@tcp(127.0.0.1:3306)/locksmith")
+	db, err := sql.Open("mysql", USER+":"+PASS+"@tcp("+HOST+")/"+DBNAME)
 	if err != nil {
 		log.Fatal("failed to connect to DB: ", err)
 	}
