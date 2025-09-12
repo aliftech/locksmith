@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package signin;
+
+option go_package = "./signinpb";
+
+message SigninRequest {
+    string email = 1;
+    string password = 2;
+}
+
+message SigninResponse {
+    bool success = 1;
+    string message = 2;
+    string token = 3; // JWT or session token (optional)
+    int64 user_id = 4;
+}
+
+service SigninService {
+    rpc Signin(SigninRequest) returns (SigninResponse);
+}
